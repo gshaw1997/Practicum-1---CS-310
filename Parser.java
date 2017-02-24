@@ -13,18 +13,35 @@ public class Parser {
 	}
 	
 	public static boolean parse(String str){
+		
 		return true;
 	}
 	
-	private TokenType lex(){
-		return null;
-	}
-	
-	private void accept(){
+	private void lex(){
+		TokenType temp;
 		
+		currentTokenType = temp;
 	}
 	
-	private void expect() {
+	private boolean accept(TokenType param){
+		if(currentToken == param){
+			lex();
+			return true;
+		}
+		else{
+			return false
+		}
+	}
+	
+	private void expect(TokenType param) {
+		if(currentToken == param){
+			lex();
+			return;
+		}
+		else{
+			throw new exception();
+			return;
+		}
 		
 	}
 	
