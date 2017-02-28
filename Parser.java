@@ -1,4 +1,7 @@
 import java.util.HashMap;
+
+import Parser.TokenType;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.Exception;
@@ -204,38 +207,47 @@ public class Parser {
 	}
 	
 	///Gus Shaw
-	private boolean bool() throws NotInLookupTableException, LexemeNotValidException, IOException {
-		//if token is variable
-		if(accept(TokenType.VAR)){
-			//Check if variable is in the lookup table
-			if(lookUpTable.keySet().contains(variable())){
-				//If the variable is a key in the look up table, return the value that if points to. (TRUE|FALSE)
-				return lookUpTable.get(variable());
+		//	The first form returns the value of the variable whose name is
+		//	<variable> (VAR in enum) in the lookup table as a boolean or else throws an
+		//	exception if the name <variable> (VAR in enum) is not in the lookup table
+		//  The second form returns the value of <literal> (LIT in enum) as a boolean
+		private boolean bool() throws Exception {
+			//if token is variable
+			if(accept(TokenType.VAR)){
+				//Check if variable is in the lookup table
+				if(lookUpTable.keySet().contains(variable())){
+					//If the variable is a key in the look up table, return the value that if points to. (TRUE|FALSE)
+					return lookUpTable.get(variable());
+				}
+				//If the variable is not a key in the look up table, throw an exception
+				else{
+					throw new NotInLookupTableException("This value is not in the lookup table.");
+				}
 			}
-			//If the variable is not a key in the look up table, throw an exception
-			else{
-				throw new NotInLookupTableException("This value is not in the lookup table.");
+			//Else if not a variable, check if it is a literal
+			else if(accept(TokenType.LIT)){
+				//If is a literal return the value of the literal
+				return literal();
 			}
+			return false;
 		}
-		//Else if not a variable, check if it is a literal
-		else if(accept(TokenType.LIT)){
-			//If is a literal return the value of the literal
-			return literal();
+		
+		//Gus Shaw
+		//Returns alphabetic lexeme as the name of the variable
+		private String variable() {
+			//Return the current token which should be a variable name
+			return LEXEME;
 		}
-		return false;
-	}
-	
-	//Gus Shaw
-	//Returns alphabetic lexeme as the name of the variable
-	private String variable() {
-		return null;
-	}
-	
-	//Gus Shaw
-	//Returns true or false
-	private boolean literal() {
-		return false;
-	}
+		
+		//Gus Shaw
+		//Returns true or false
+		private boolean literal() {
+			//Take the current token check if it equals the literal string true, If so return the boolen value true
+			if(LEXEME.toLowerCase().equals("true")) return true;
+			//Else the current token must equal false; Return the boolean value false
+			else
+			return false;
+		}
 	
 	private static boolean isLetter(char c){
 		boolean boo = false;
