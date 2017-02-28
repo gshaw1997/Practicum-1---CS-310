@@ -21,7 +21,7 @@ public class Parser {
 	public static boolean parse(String str) throws LexemeNotValidException, IOException{
 		stringReader = new StringReader(str);
 		lex();
-		return true;
+		return program();
 	}
 	
 	// Caleb McHenry
@@ -164,8 +164,8 @@ public class Parser {
 	}
 	
 	// Alex Colon
-	private void program(){ // { <assignment> }* <query>
-		while(NEXT_LEXEME == TokenType.LET){
+	private boolean program(){ // { <assignment> }* <query>
+		while(NEXT_LEXEME.toUpperCase == TokenType.LET){
 			assignment();
 		}
 		query();
@@ -181,7 +181,7 @@ public class Parser {
 	}
 	
 	// Alex Colon
-	private void query() { // QUERY <proposition>
+	private boolean query() { // QUERY <proposition>
 		expect(QUERY);
 		proposition();
 	}
