@@ -165,7 +165,10 @@ public class Parser {
 	
 	// Alex Colon
 	private void program(){ // { <assignment> }* <query>
-		
+		while(NEXT_LEXEME == TokenType.LET){
+			assignment();
+		}
+		query();
 	}
 	
 	// Alex Colon
@@ -179,7 +182,8 @@ public class Parser {
 	
 	// Alex Colon
 	private void query() { // QUERY <proposition>
-		
+		expect(QUERY);
+		proposition();
 	}
 	
 	// Andrew Suggs
