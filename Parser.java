@@ -175,17 +175,26 @@ public class Parser {
 	
 	// Andrew Suggs
 	private void proposition() {
-		
+		implication();
+		while(accept(TokenType.PROP)){
+			implication();
+		}
 	}
 	
 	//Andrew Suggs
 	private void implication() {
-		
+		disjunction();
+		while(accept(TokenType.IMP)){
+			disjunction();
+		}
 	}
 	
 	//Andrew Suggs
 	private void disjunction() {
-		
+		conjunction();
+		while(accept(TokenType.DIS)){
+			conjunction();
+		}
 	}
 	
 	//Trace Boso
