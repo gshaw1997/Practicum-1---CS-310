@@ -1,7 +1,4 @@
 import java.util.HashMap;
-
-import Parser.TokenType;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.Exception;
@@ -9,7 +6,8 @@ import java.lang.Exception;
 public class Parser {
 	
 	private HashMap<String, Boolean> lookUpTable = new HashMap<String, Boolean>();
-	private static String LEXEME;
+	private static String CURRENT_LEXEME;
+	private static String NEXT_LEXEME;
 	private static TokenType TOKEN;
 	private static StringReader stringReader;
 	
@@ -17,14 +15,16 @@ public class Parser {
 		LET, QUERY, LIT, PROP, IMP, DIS, CON, NEG, L_PAR, R_PAR, ASSIGN, DELIM, DOT, VAR, EOL
 	}
 	
-	public static boolean parse(String str) throws Exception{
+	public static boolean parse(String str) throws LexemeNotValidException, IOException{
+		stringReader = new StringReader(str);
 		lex();
 		return true;
 	}
 	
 	// Caleb McHenry
-	private static void lex() throws Exception{
-		LEXEME = "";
+	private static void lex() throws LexemeNotValidException, IOException{
+		CURRENT_LEXEME = NEXT_LEXEME;
+		NEXT_LEXEME = "";
 		int c = stringReader.read();
 		
 		//End Of Line
@@ -41,23 +41,23 @@ public class Parser {
 		//Variable or Keyword
 		if(isLetter((char)c) == true){
 			while(isLetter((char)c)){
-				LEXEME += (char)c;
+				NEXT_LEXEME += (char)c;
 				stringReader.mark(1);
 				c = stringReader.read();
 			}
 			stringReader.reset();
 			//LET
-			if(LEXEME.toUpperCase() == "LET"){
+			if(NEXT_LEXEME.toUpperCase() == "LET"){
 				TOKEN = TokenType.LET;
 				return;
 			}
 			//QUERY
-			else if(LEXEME.toUpperCase() == "QUERY"){
+			else if(NEXT_LEXEME.toUpperCase() == "QUERY"){
 				TOKEN = TokenType.QUERY;
 				return;
 			}
 			//TRUE or FALSE
-			else if(LEXEME.toUpperCase() == "TRUE" || LEXEME.toUpperCase() == "FALSE"){
+			else if(NEXT_LEXEME.toUpperCase() == "TRUE" || NEXT_LEXEME.toUpperCase() == "FALSE"){
 				TOKEN = TokenType.LIT;
 				return;
 			}
@@ -68,31 +68,31 @@ public class Parser {
 			}
 		}
 		else{
-			LEXEME += (char)c;
+			NEXT_LEXEME += (char)c;
 			//Proposition <=>
 			if(c == '<'){
 				c = stringReader.read();
 				if(c == '='){
-					LEXEME += (char)c;
+					NEXT_LEXEME += (char)c;
 					c = stringReader.read();
 					if(c == '>'){
-						LEXEME += (char)c;
+						NEXT_LEXEME += (char)c;
 						TOKEN = TokenType.PROP;
 						return;
 					}
 				}
-				throw new Exception();
+				throw new LexemeNotValidException("Lexeme: " + NEXT_LEXEME + "is not a valid lexeme");
 			}
 			//Implication ->
 			else if(c == '-'){
 				c = stringReader.read();
 				if(c == '>') {
-					LEXEME += (char)c;
+					NEXT_LEXEME += (char)c;
 					TOKEN =TokenType.IMP;
 					return;
 				}
 				else{
-					throw new Exception();
+					throw new LexemeNotValidException("Lexeme: " + NEXT_LEXEME + "is not a valid lexeme");
 				}
 			}
 			//Disjunction |
@@ -124,7 +124,7 @@ public class Parser {
 			else if(c == '='){
 				TOKEN = TokenType.ASSIGN;
 			}
-			//Delimeter ;
+			//Delimiter ;
 			else if(c == ';'){
 				TOKEN = TokenType.DELIM;
 			}
@@ -136,7 +136,7 @@ public class Parser {
 	}
 	
 	// Caleb McHenry
-	private boolean accept(TokenType param) throws Exception{
+	private boolean accept(TokenType param) throws LexemeNotValidException, IOException{
 		if(TOKEN == param){
 			lex();
 			return true;
@@ -147,13 +147,13 @@ public class Parser {
 	}
 	
 	//Caleb McHenry
-	private void expect(TokenType param) throws Exception {
+	private void expect(TokenType param) throws NotExpectedTokenTypeException, LexemeNotValidException, IOException{
 		if(TOKEN == param){
 			lex();
 			return;
 		}
 		else{
-			throw new Exception();
+			throw new NotExpectedTokenTypeException("Expected TokenType: " + TOKEN + ", but received TokenType: " + param);
 		}
 		
 	}
@@ -204,7 +204,7 @@ public class Parser {
 	}
 	
 	///Gus Shaw
-	private boolean bool() throws NotInLookupTableException {
+	private boolean bool() throws NotInLookupTableException, LexemeNotValidException, IOException {
 		//if token is variable
 		if(accept(TokenType.VAR)){
 			//Check if variable is in the lookup table
