@@ -174,7 +174,7 @@ public class Parser {
 	}
 	
 	// Andrew Suggs
-	private void proposition() {
+	private void proposition() throws Exception {
 		implication();
 		while(accept(TokenType.PROP)){
 			implication();
@@ -182,7 +182,7 @@ public class Parser {
 	}
 	
 	//Andrew Suggs
-	private void implication() {
+	private void implication() throws Exception {
 		disjunction();
 		while(accept(TokenType.IMP)){
 			disjunction();
@@ -190,7 +190,7 @@ public class Parser {
 	}
 	
 	//Andrew Suggs
-	private void disjunction() {
+	private void disjunction() throws Exception {
 		conjunction();
 		while(accept(TokenType.DIS)){
 			conjunction();
@@ -213,12 +213,12 @@ public class Parser {
 	}
 	
 	///Gus Shaw
-	private boolean bool() throws NotInLookupTableException {
+	private boolean bool() throws Exception, NotInLookupTableException {
 		//if token is variable
 		if(accept(TokenType.VAR)){
 			//Check if variable is in the lookup table
 			if(lookUpTable.keySet().contains(variable())){
-				//If the variable is a key in the look up table, return the value that if points to. (TRUE|FALSE)
+				//If the variable is a key in the look up table, return the value that it points to. (TRUE|FALSE)
 				return lookUpTable.get(variable());
 			}
 			//If the variable is not a key in the look up table, throw an exception
