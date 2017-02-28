@@ -9,8 +9,8 @@ import java.lang.Exception;
 public class Parser {
 	
 	private HashMap<String, Boolean> lookUpTable = new HashMap<String, Boolean>();
-	private static String CURRENT_LEXEME;
-	private static String NEXT_LEXEME;
+	private static StringBuilder CURRENT_LEXEME;
+	private static StringBuilder NEXT_LEXEME;
 	private static TokenType TOKEN;
 	private static StringReader stringReader;
 	
@@ -26,8 +26,10 @@ public class Parser {
 	
 	// Caleb McHenry
 	private static void lex() throws LexemeNotValidException, IOException{
-		CURRENT_LEXEME = NEXT_LEXEME;
-		NEXT_LEXEME = "";
+		if(NEXT_LEXEME != null){
+			CURRENT_LEXEME = NEXT_LEXEME;
+		}
+		NEXT_LEXEME = new StringBuilder();
 		int c = stringReader.read();
 		
 		//End Of Line
@@ -44,23 +46,23 @@ public class Parser {
 		//Variable or Keyword
 		if(isLetter((char)c) == true){
 			while(isLetter((char)c)){
-				NEXT_LEXEME += (char)c;
+				NEXT_LEXEME.append((char)c);
 				stringReader.mark(1);
 				c = stringReader.read();
 			}
 			stringReader.reset();
 			//LET
-			if(NEXT_LEXEME.toUpperCase() == "LET"){
+			if(NEXT_LEXEME.toString().toUpperCase() == "LET"){
 				TOKEN = TokenType.LET;
 				return;
 			}
 			//QUERY
-			else if(NEXT_LEXEME.toUpperCase() == "QUERY"){
+			else if(NEXT_LEXEME.toString().toUpperCase() == "QUERY"){
 				TOKEN = TokenType.QUERY;
 				return;
 			}
 			//TRUE or FALSE
-			else if(NEXT_LEXEME.toUpperCase() == "TRUE" || NEXT_LEXEME.toUpperCase() == "FALSE"){
+			else if(NEXT_LEXEME.toString().toUpperCase() == "TRUE" || NEXT_LEXEME.toString().toUpperCase() == "FALSE"){
 				TOKEN = TokenType.LIT;
 				return;
 			}
@@ -71,15 +73,15 @@ public class Parser {
 			}
 		}
 		else{
-			NEXT_LEXEME += (char)c;
+			NEXT_LEXEME.append((char)c);
 			//Proposition <=>
 			if(c == '<'){
 				c = stringReader.read();
 				if(c == '='){
-					NEXT_LEXEME += (char)c;
+					NEXT_LEXEME.append((char)c);
 					c = stringReader.read();
 					if(c == '>'){
-						NEXT_LEXEME += (char)c;
+						NEXT_LEXEME.append((char)c);
 						TOKEN = TokenType.PROP;
 						return;
 					}
@@ -90,12 +92,12 @@ public class Parser {
 			else if(c == '-'){
 				c = stringReader.read();
 				if(c == '>') {
-					NEXT_LEXEME += (char)c;
+					NEXT_LEXEME.append((char)c);
 					TOKEN =TokenType.IMP;
 					return;
 				}
 				else{
-					throw new LexemeNotValidException("Lexeme: " + NEXT_LEXEME + "is not a valid lexeme");
+					throw new LexemeNotValidException("Lexeme: " + NEXT_LEXEME.toString() + "is not a valid lexeme");
 				}
 			}
 			//Disjunction |
