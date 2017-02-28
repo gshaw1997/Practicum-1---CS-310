@@ -1,7 +1,5 @@
 import java.util.HashMap;
 
-import Parser.TokenType;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.Exception;
@@ -235,26 +233,21 @@ public class Parser {
 				throw new NotInLookupTableException("This value is not in the lookup table.");
 			}
 		}
-		//Else if not a variable, check if it is a literal
-		else if(accept(TokenType.LIT)){
-			//If is a literal return the value of the literal
-			return literal();
-		}
-		return false;
+			return false;
 	}
-	
+		
 	//Gus Shaw
 	//Returns alphabetic lexeme as the name of the variable
 	private String variable() {
 		//Return the current token which should be a variable name
-		return LEXEME;
+		return CURRENT_LEXEME.toString();
 	}
 	
 	//Gus Shaw
 	//Returns true or false
 	private boolean literal() {
 		//Take the current token check if it equals the literal string true, If so return the boolen value true
-		if(LEXEME.toLowerCase().equals("true")) return true;
+		if(CURRENT_LEXEME.toString().toLowerCase().equals("true")) return true;
 		//Else the current token must equal false; Return the boolean value false
 		else
 		return false;
