@@ -17,12 +17,14 @@ public class Parser {
 		return true;
 	}
 	
+	// Caleb McHenry
 	private void lex(){
 		TokenType temp;
 		
 		currentTokenType = temp;
 	}
 	
+	// Caleb McHenry
 	private boolean accept(TokenType param){
 		if(currentToken == param){
 			lex();
@@ -33,6 +35,7 @@ public class Parser {
 		}
 	}
 	
+	//Caleb McHenry
 	private void expect(TokenType param) {
 		if(currentToken == param){
 			lex();
@@ -45,50 +48,62 @@ public class Parser {
 		
 	}
 	
+	// Alex Colon
 	private void program(){
 		
 	}
 	
+	// Alex Colon
 	private void assignment(){
 		
 	}
 	
+	// Alex Colon
 	private void query() {
 		
 	}
 	
+	// Andrew Suggs
 	private void proposition() {
 		
 	}
 	
+	//Andrew Suggs
 	private void implication() {
 		
 	}
 	
+	//Andrew Suggs
 	private void disjunction() {
 		
 	}
 	
+	//Trace Boso
 	private void conjunction() {
 		
 	}
 	
+	//Trace Boso
 	private void negation() {
 		
 	}
 	
+	//Trace Boso
 	private void expression(){
 		
 	}
 	
+	//Gus Shaw
 	private void boo() {
 		
 	}
 	
+	//Gus Shaw
 	private void variable() {
 		
 	}
 	
+	//Gus Shaw
 	private void literal() {
 		
 	}
