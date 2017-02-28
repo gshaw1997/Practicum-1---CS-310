@@ -1,11 +1,14 @@
 import java.util.HashMap;
+
+import Parser.TokenType;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.Exception;
 
 public class Parser {
 	
-	private HashMap<String, Boolean> map = new HashMap<String, Boolean>();
+	private HashMap<String, Boolean> lookUpTable = new HashMap<String, Boolean>();
 	private static String LEXEME;
 	private static TokenType TOKEN;
 	private static StringReader stringReader;
@@ -200,19 +203,38 @@ public class Parser {
 		
 	}
 	
-	//Gus Shaw
-	private void boo() {
-		
+	///Gus Shaw
+	private boolean bool() throws NotInLookupTableException {
+		//if token is variable
+		if(accept(TokenType.VAR)){
+			//Check if variable is in the lookup table
+			if(lookUpTable.keySet().contains(variable())){
+				//If the variable is a key in the look up table, return the value that if points to. (TRUE|FALSE)
+				return lookUpTable.get(variable());
+			}
+			//If the variable is not a key in the look up table, throw an exception
+			else{
+				throw new NotInLookupTableException("This value is not in the lookup table.");
+			}
+		}
+		//Else if not a variable, check if it is a literal
+		else if(accept(TokenType.LIT)){
+			//If is a literal return the value of the literal
+			return literal();
+		}
+		return false;
 	}
 	
 	//Gus Shaw
-	private void variable() {
-		
+	//Returns alphabetic lexeme as the name of the variable
+	private String variable() {
+		return null;
 	}
 	
 	//Gus Shaw
-	private void literal() {
-		
+	//Returns true or false
+	private boolean literal() {
+		return false;
 	}
 	
 	private static boolean isLetter(char c){
