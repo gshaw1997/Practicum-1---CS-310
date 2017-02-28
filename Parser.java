@@ -1,5 +1,6 @@
 import java.util.HashMap;
 
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.Exception;
@@ -239,9 +240,10 @@ public class Parser {
 				//If the variable is a key in the look up table, return the value that if points to. (TRUE|FALSE)
 				return lookUpTable.get(variable());
 			}
-			//If the variable is not a key in the look up table, throw an exception
-			else{
-				throw new NotInLookupTableException("This value is not in the lookup table.");
+			//Else if not a variable, check if it is a literal
+			else if(accept(TokenType.LIT)){
+				//If is a literal return the value of the literal
+				return literal();
 			}
 		}
 		else if(accept(TokenType.LIT)){
