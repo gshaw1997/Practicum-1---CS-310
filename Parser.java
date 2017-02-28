@@ -14,13 +14,13 @@ public class Parser {
 		LET, QUERY, LIT, PROP, IMP, DIS, CON, NEG, L_PAR, R_PAR, ASSIGN, DELIM, DOT, VAR, EOL
 	}
 	
-	public static boolean parse(String str) throws IOException{
+	public static boolean parse(String str) throws Exception{
 		lex();
 		return true;
 	}
 	
 	// Caleb McHenry
-	private static void lex() throws IOException{
+	private static void lex() throws Exception{
 		LEXEME = "";
 		int c = stringReader.read();
 		
@@ -78,8 +78,7 @@ public class Parser {
 						return;
 					}
 				}
-				//TODO: throw error
-				return;
+				throw new Exception();
 			}
 			//Implication ->
 			else if(c == '-'){
@@ -90,7 +89,7 @@ public class Parser {
 					return;
 				}
 				else{
-					//TODO: throw error
+					throw new Exception();
 				}
 			}
 			//Disjunction |
@@ -134,7 +133,7 @@ public class Parser {
 	}
 	
 	// Caleb McHenry
-	private boolean accept(TokenType param) throws IOException{
+	private boolean accept(TokenType param) throws Exception{
 		if(TOKEN == param){
 			lex();
 			return true;
@@ -145,14 +144,13 @@ public class Parser {
 	}
 	
 	//Caleb McHenry
-	private void expect(TokenType param) throws IOException {
+	private void expect(TokenType param) throws Exception {
 		if(TOKEN == param){
 			lex();
 			return;
 		}
 		else{
-			//throw new exception();
-			return;
+			throw new Exception();
 		}
 		
 	}

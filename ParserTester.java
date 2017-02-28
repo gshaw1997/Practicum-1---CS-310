@@ -121,7 +121,7 @@ public class ParserTester {
 			{ true,  "let p = true;     query P." },
 			{ true,  "let P = true;     query p." }};
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 		System.out.println("Hello");
 		for(Object[] test: tests){
 			boolean result = Parser.parse((String)test[1]);
