@@ -1,6 +1,4 @@
-`import java.util.HashMap;
-
-import Parser.TokenType;
+import java.util.HashMap;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -8,7 +6,7 @@ import java.lang.Exception;
 
 public class Parser {
 	
-	private HashMap<String, Boolean> lookUpTable = new HashMap<String, Boolean>();
+	private static HashMap<String, Boolean> lookUpTable = new HashMap<String, Boolean>();
 	private static StringBuilder CURRENT_LEXEME;
 	private static StringBuilder NEXT_LEXEME;
 	private static TokenType TOKEN;
@@ -18,7 +16,7 @@ public class Parser {
 		LET, QUERY, LIT, PROP, IMP, DIS, CON, NEG, L_PAR, R_PAR, ASSIGN, DELIM, DOT, VAR, EOL
 	}
 	
-	public static boolean parse(String str) throws LexemeNotValidException, IOException{
+	public static boolean parse(String str) throws LexemeNotValidException, IOException, NotExpectedTokenTypeException{
 		stringReader = new StringReader(str);
 		lex();
 		return program();
@@ -141,7 +139,7 @@ public class Parser {
 	}
 	
 	// Caleb McHenry
-	private boolean accept(TokenType param) throws LexemeNotValidException, IOException{
+	private static boolean accept(TokenType param) throws LexemeNotValidException, IOException{
 		if(TOKEN == param){
 			lex();
 			return true;
@@ -152,7 +150,7 @@ public class Parser {
 	}
 	
 	//Caleb McHenry
-	private void expect(TokenType param) throws NotExpectedTokenTypeException, LexemeNotValidException, IOException{
+	private static void expect(TokenType param) throws NotExpectedTokenTypeException, LexemeNotValidException, IOException{
 		if(TOKEN == param){
 			lex();
 			return;
@@ -164,56 +162,56 @@ public class Parser {
 	}
 	
 	// Alex Colon
-	private boolean program(){ // { <assignment> }* <query>
-		while(NEXT_LEXEME.toUpperCase == TokenType.LET){
+	private static boolean program() throws NotExpectedTokenTypeException, LexemeNotValidException, IOException{ // { <assignment> }* <query>
+		while(NEXT_LEXEME.toString().toUpperCase() == "LET"){
 			assignment();
 		}
-		query();
+		return query();
 	}
 	
 	// Alex Colon
-	private void assignment(){ // LET <variable> = <proposition>;
-		expect(LET);
+	private static void assignment() throws NotExpectedTokenTypeException, LexemeNotValidException, IOException{ // LET <variable> = <proposition>;
+		expect(TokenType.LET);
 		variable();
-		expect(ASSIGN);
+		expect(TokenType.ASSIGN);
 		proposition();
-		expect(EOL);
+		expect(TokenType.EOL);
 	}
 	
 	// Alex Colon
-	private boolean query() { // QUERY <proposition>
-		expect(QUERY);
-		proposition();
+	private static boolean query() throws NotExpectedTokenTypeException, LexemeNotValidException, IOException{ // QUERY <proposition>
+		expect(TokenType.QUERY);
+		return proposition();
 	}
 	
 	// Andrew Suggs
-	private void proposition() {
+	private static boolean proposition() {
 		
 	}
 	
 	//Andrew Suggs
-	private void implication() {
+	private static boolean implication() {
 		
 	}
 	
 	//Andrew Suggs
-	private void disjunction() {
+	private static boolean disjunction() {
 		
 	}
 	
 	//Trace Boso
-	private void conjunction() {
-		
+	private static boolean conjunction() {
+		return true;
 	}
 	
 	//Trace Boso
-	private void negation() {
-		
+	private static boolean negation() {
+		return true;
 	}
 	
 	//Trace Boso
-	private void expression(){
-		
+	private static boolean expression(){
+		return true;
 	}
 	
 	///Gus Shaw
@@ -221,7 +219,7 @@ public class Parser {
 		//	<variable> (VAR in enum) in the lookup table as a boolean or else throws an
 		//	exception if the name <variable> (VAR in enum) is not in the lookup table
 		//  The second form returns the value of <literal> (LIT in enum) as a boolean
-		private boolean bool() throws Exception {
+		private static boolean bool() throws Exception {
 			//if token is variable
 			if(accept(TokenType.VAR)){
 				//Check if variable is in the lookup table
@@ -244,14 +242,14 @@ public class Parser {
 		
 		//Gus Shaw
 		//Returns alphabetic lexeme as the name of the variable
-		private String variable() {
+		private static String variable() {
 			//Return the current token which should be a variable name
 			return CURRENT_LEXEME.toString();
 		}
 		
 		//Gus Shaw
 		//Returns true or false
-		private boolean literal() {
+		private static boolean literal() {
 			//Take the current token check if it equals the literal string true, If so return the boolen value true
 			if(CURRENT_LEXEME.toString().toLowerCase().equals("true")) return true;
 			//Else the current token must equal false; Return the boolean value false
