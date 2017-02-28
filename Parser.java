@@ -1,4 +1,4 @@
-import java.util.HashMap;
+`import java.util.HashMap;
 
 import Parser.TokenType;
 
@@ -164,17 +164,21 @@ public class Parser {
 	}
 	
 	// Alex Colon
-	private void program(){
+	private void program(){ // { <assignment> }* <query>
 		
 	}
 	
 	// Alex Colon
-	private void assignment(){
-		
+	private void assignment(){ // LET <variable> = <proposition>;
+		expect(LET);
+		variable();
+		expect(ASSIGN);
+		proposition();
+		expect(EOL);
 	}
 	
 	// Alex Colon
-	private void query() {
+	private void query() { // QUERY <proposition>
 		
 	}
 	
