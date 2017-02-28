@@ -185,18 +185,30 @@ public class Parser {
 	}
 	
 	// Andrew Suggs
-	private static boolean proposition() {
-		
+	private static boolean proposition() throws LexemeNotValidException, IOException {
+		boolean result = implication();
+		while(accept(TokenType.PROP)){
+			return result = !result || implication();
+		}
+		return result;
 	}
 	
 	//Andrew Suggs
-	private static boolean implication() {
-		
+	private static boolean implication() throws LexemeNotValidException, IOException {
+		boolean result = disjunction();
+		while(accept(TokenType.IMP)){
+			result = result || disjunction();
+		}
+		return result;
 	}
 	
 	//Andrew Suggs
-	private static boolean disjunction() {
-		
+	private static boolean disjunction() throws LexemeNotValidException, IOException {
+		boolean result = conjunction();
+		while(accept(TokenType.DIS)){
+			result = result && conjunction();
+		}
+		return result;
 	}
 	
 	//Trace Boso
@@ -215,47 +227,45 @@ public class Parser {
 	}
 	
 	///Gus Shaw
-		//	The first form returns the value of the variable whose name is
-		//	<variable> (VAR in enum) in the lookup table as a boolean or else throws an
-		//	exception if the name <variable> (VAR in enum) is not in the lookup table
-		//  The second form returns the value of <literal> (LIT in enum) as a boolean
-		private static boolean bool() throws Exception {
-			//if token is variable
-			if(accept(TokenType.VAR)){
-				//Check if variable is in the lookup table
-				if(lookUpTable.keySet().contains(variable())){
-					//If the variable is a key in the look up table, return the value that if points to. (TRUE|FALSE)
-					return lookUpTable.get(variable());
-				}
-				//If the variable is not a key in the look up table, throw an exception
-				else{
-					throw new NotInLookupTableException("This value is not in the lookup table.");
-				}
+	//	The first form returns the value of the variable whose name is
+	//	<variable> (VAR in enum) in the lookup table as a boolean or else throws an
+	//	exception if the name <variable> (VAR in enum) is not in the lookup table
+	//  The second form returns the value of <literal> (LIT in enum) as a boolean
+	private static boolean bool() throws Exception {
+		//if token is variable
+		if(accept(TokenType.VAR)){
+			//Check if variable is in the lookup table
+			if(lookUpTable.keySet().contains(variable())){
+				//If the variable is a key in the look up table, return the value that if points to. (TRUE|FALSE)
+				return lookUpTable.get(variable());
 			}
-			//Else if not a variable, check if it is a literal
-			else if(accept(TokenType.LIT)){
-				//If is a literal return the value of the literal
-				return literal();
+			//If the variable is not a key in the look up table, throw an exception
+			else{
+				throw new NotInLookupTableException("This value is not in the lookup table.");
 			}
-			return false;
 		}
+		else if(accept(TokenType.LIT)){
+			return literal();
+		}
+		return false;
+	}
 		
-		//Gus Shaw
-		//Returns alphabetic lexeme as the name of the variable
-		private static String variable() {
-			//Return the current token which should be a variable name
-			return CURRENT_LEXEME.toString();
-		}
-		
-		//Gus Shaw
-		//Returns true or false
-		private static boolean literal() {
-			//Take the current token check if it equals the literal string true, If so return the boolen value true
-			if(CURRENT_LEXEME.toString().toLowerCase().equals("true")) return true;
-			//Else the current token must equal false; Return the boolean value false
-			else
-			return false;
-		}
+	//Gus Shaw
+	//Returns alphabetic lexeme as the name of the variable
+	private static String variable() {
+		//Return the current token which should be a variable name
+		return CURRENT_LEXEME.toString();
+	}
+	
+	//Gus Shaw
+	//Returns true or false
+	private static boolean literal() {
+		//Take the current token check if it equals the literal string true, If so return the boolen value true
+		if(CURRENT_LEXEME.toString().toLowerCase().equals("true")) return true;
+		//Else the current token must equal false; Return the boolean value false
+		else
+		return false;
+	}
 	
 	private static boolean isLetter(char c){
 		boolean boo = false;
