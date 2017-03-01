@@ -213,18 +213,43 @@ public class Parser {
 	}
 	
 	//Trace Boso
-	private static boolean conjunction() {
-		return true;
+	private static boolean conjunction() throws LexemeNotValidException, IOException {
+		boolean result = negation();
+		while (accept(TokenType.CON)){
+			result = result && negation();
+		}
+		
+		return result;
 	}
 	
 	//Trace Boso
-	private static boolean negation() {
-		return true;
+	private static boolean negation() throws LexemeNotValidException, IOException {
+		boolean result;
+		
+		if (accept(TokenType.NEG)){
+			result= !expression();
+		}
+		else {
+			result=expression();
+		}
+		return result;
 	}
 	
 	//Trace Boso
-	private static boolean expression(){
-		return true;
+	// needs checked/fixed
+	
+	private static boolean expression() throws LexemeNotValidException, IOException {
+		boolean result;
+		
+		if (NEXT_LEXEME.toString().toUpperCase()=="("){
+			expect(TokenType.L_PAR);
+			result = proposition();
+			expect(TokenType.R_PAR);
+		}
+		else {
+			result=bool();
+		}
+		return result;
 	}
 	
 	///Gus Shaw
@@ -232,7 +257,7 @@ public class Parser {
 	//	<variable> (VAR in enum) in the lookup table as a boolean or else throws an
 	//	exception if the name <variable> (VAR in enum) is not in the lookup table
 	//  The second form returns the value of <literal> (LIT in enum) as a boolean
-	private static boolean bool() throws Exception {
+	private static boolean bool() throws LexemeNotValidException, IOException  {
 		//if token is variable
 		if(accept(TokenType.VAR)){
 			//Check if variable is in the lookup table
