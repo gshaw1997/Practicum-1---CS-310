@@ -224,10 +224,13 @@ public class Parser {
 	
 	//Trace Boso
 	private static boolean negation() throws LexemeNotValidException, IOException {
-		boolean result = expression();
+		boolean result;
 		
 		if (accept(TokenType.NEG)){
-			result= !result;
+			result= !expression();
+		}
+		else {
+			result=expression();
 		}
 		return result;
 	}
@@ -236,11 +239,15 @@ public class Parser {
 	// needs checked/fixed
 	
 	private static boolean expression() throws LexemeNotValidException, IOException {
-		boolean result = bool();
+		boolean result;
 		
-		if (accept(TokenType.L_PAR)){
+		if (NEXT_LEXEME.toString().toUpperCase()=="("){
+			expect(TokenType.L_PAR);
 			result = proposition();
 			expect(TokenType.R_PAR);
+		}
+		else {
+			result=bool();
 		}
 		return result;
 	}
