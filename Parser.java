@@ -79,18 +79,33 @@ public class Parser {
 	}
 	
 	//Trace Boso
-	private void conjunction() {
+	private static boolean conjunction() throws LexemeNotValidException, IOException {
+		boolean result = negation();
+		while (accept(TokenType.CON)){
+			result = result && negation();
+		}
 		
+		return result;
 	}
 	
 	//Trace Boso
-	private void negation() {
+	private static boolean negation() throws LexemeNotValidException, IOException {
+		boolean result = expression();
 		
+		if (accept(TokenType.NEG)){
+			result= !result;
+		}
+		return result;
 	}
 	
 	//Trace Boso
-	private void expression(){
+	private static boolean expression() throws LexemeNotValidException, IOException {
+		boolean result = proposition();
 		
+		if (accept(TokenType.VAR)){
+			result = bool ();
+		}
+		return result;
 	}
 	
 	//Gus Shaw
