@@ -51,17 +51,17 @@ public class Parser {
 			}
 			stringReader.reset();
 			//LET
-			if(NEXT_LEXEME.toString().toUpperCase() == "LET"){
+			if(NEXT_LEXEME.toString().toUpperCase().equals("LET")){
 				TOKEN = TokenType.LET;
 				return;
 			}
 			//QUERY
-			else if(NEXT_LEXEME.toString().toUpperCase() == "QUERY"){
+			else if(NEXT_LEXEME.toString().toUpperCase().equals("QUERY")){
 				TOKEN = TokenType.QUERY;
 				return;
 			}
 			//TRUE or FALSE
-			else if(NEXT_LEXEME.toString().toUpperCase() == "TRUE" || NEXT_LEXEME.toString().toUpperCase() == "FALSE"){
+			else if(NEXT_LEXEME.toString().toUpperCase().equals("TRUE") || NEXT_LEXEME.toString().toUpperCase().equals("FALSE")){
 				TOKEN = TokenType.LIT;
 				return;
 			}
@@ -164,7 +164,7 @@ public class Parser {
 	
 	// Alex Colon
 	private static boolean program() throws NotExpectedTokenTypeException, LexemeNotValidException, IOException{ // { <assignment> }* <query>
-		while(NEXT_LEXEME.toString().toUpperCase() == "LET"){
+		while(NEXT_LEXEME.toString().toUpperCase().equals("LET")){
 			assignment();
 		}
 		return query();
@@ -241,7 +241,7 @@ public class Parser {
 	private static boolean expression() throws LexemeNotValidException, IOException {
 		boolean result;
 		
-		if (NEXT_LEXEME.toString().toUpperCase()=="("){
+		if (NEXT_LEXEME.toString().toUpperCase().equals("(")){
 			expect(TokenType.L_PAR);
 			result = proposition();
 			expect(TokenType.R_PAR);
