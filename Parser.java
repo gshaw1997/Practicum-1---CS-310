@@ -190,17 +190,23 @@ public class Parser {
 	private static boolean proposition() throws LexemeNotValidException, IOException {
 		boolean result = implication();
 		while(accept(TokenType.PROP)){
-			return result = (result == implication());
+			return (result == implication());
 		}
 		return result;
 	}
 	
 	//Andrew Suggs
 	private static boolean implication() throws LexemeNotValidException, IOException {
-		boolean result = disjunction();
-		while(accept(TokenType.IMP)){
-			result = disjunction() || !result;
-		}
+//		boolean result = disjunction();
+//		while(accept(TokenType.IMP)){
+//			result = disjunction() || !result;
+//		}
+//		return result;
+		 boolean result = disjunction();
+		 if(NEXT_LEXEME.toString().toUpperCase().equals("->")){
+			 expect(TokenType.IMP);
+			 result = implication() || !result;
+		 }
 		return result;
 	}
 	
