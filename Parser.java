@@ -157,7 +157,7 @@ public class Parser {
 			return;
 		}
 		else{
-			throw new NotExpectedTokenTypeException("Expected TokenType: " + TOKEN + ", but received TokenType: " + param);
+			throw new NotExpectedTokenTypeException("Lexer TokenType: " + TOKEN + ", but expected TokenType: " + param);
 		}
 		
 	}
@@ -190,7 +190,7 @@ public class Parser {
 	private static boolean proposition() throws LexemeNotValidException, IOException {
 		boolean result = implication();
 		while(accept(TokenType.PROP)){
-			return result = result == implication();
+			return result = (result == implication());
 		}
 		return result;
 	}
@@ -199,7 +199,7 @@ public class Parser {
 	private static boolean implication() throws LexemeNotValidException, IOException {
 		boolean result = disjunction();
 		while(accept(TokenType.IMP)){
-			result = !result || disjunction();
+			result = disjunction() || !result;
 		}
 		return result;
 	}
@@ -208,7 +208,7 @@ public class Parser {
 	private static boolean disjunction() throws LexemeNotValidException, IOException {
 		boolean result = conjunction();
 		while(accept(TokenType.DIS)){
-			result = result || conjunction();
+			result = conjunction() || result;
 		}
 		return result;
 	}
@@ -217,7 +217,7 @@ public class Parser {
 	private static boolean conjunction() throws LexemeNotValidException, IOException {
 		boolean result = negation();
 		while (accept(TokenType.CON)){
-			result = result && negation();
+			result = negation() && result;
 		}
 		
 		return result;
