@@ -122,7 +122,6 @@ public class ParserTester {
 			{ true,  "let P = true;     query p." }};
 
 	public static void main(String[] args) throws Exception {
-		System.out.println("Hello");
 		for(Object[] test: tests){
 			boolean result = Parser.parse((String)test[1]);
 			System.out.printf("Success: %6b| Expected:%6b| Actual:%6b|  %s\n",(Boolean)test[0] == result, test[0], result, test[1]);

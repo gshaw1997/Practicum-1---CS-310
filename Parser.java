@@ -173,10 +173,11 @@ public class Parser {
 	// Alex Colon
 	private static void assignment() throws NotExpectedTokenTypeException, LexemeNotValidException, IOException{ // LET <variable> = <proposition>;
 		expect(TokenType.LET);
-		variable();
+		String name =variable();
 		expect(TokenType.ASSIGN);
-		proposition();
-		expect(TokenType.EOL);
+		boolean value = proposition();
+		lookUpTable.put(name, value);
+		expect(TokenType.DELIM);
 	}
 	
 	// Alex Colon
@@ -189,7 +190,7 @@ public class Parser {
 	private static boolean proposition() throws LexemeNotValidException, IOException {
 		boolean result = implication();
 		while(accept(TokenType.PROP)){
-			return result = !result || implication();
+			return result = result == implication();
 		}
 		return result;
 	}
@@ -198,7 +199,7 @@ public class Parser {
 	private static boolean implication() throws LexemeNotValidException, IOException {
 		boolean result = disjunction();
 		while(accept(TokenType.IMP)){
-			result = result || disjunction();
+			result = !result || disjunction();
 		}
 		return result;
 	}
@@ -207,7 +208,7 @@ public class Parser {
 	private static boolean disjunction() throws LexemeNotValidException, IOException {
 		boolean result = conjunction();
 		while(accept(TokenType.DIS)){
-			result = result && conjunction();
+			result = result || conjunction();
 		}
 		return result;
 	}
@@ -247,7 +248,7 @@ public class Parser {
 			expect(TokenType.R_PAR);
 		}
 		else {
-			result=bool();
+			result = bool();
 		}
 		return result;
 	}
@@ -258,36 +259,46 @@ public class Parser {
 	//	exception if the name <variable> (VAR in enum) is not in the lookup table
 	//  The second form returns the value of <literal> (LIT in enum) as a boolean
 	private static boolean bool() throws LexemeNotValidException, IOException  {
-		//if token is variable
-		if(accept(TokenType.VAR)){
-			//Check if variable is in the lookup table
-			if(lookUpTable.keySet().contains(variable())){
-				//If the variable is a key in the look up table, return the value that if points to. (TRUE|FALSE)
-				return lookUpTable.get(variable());
-			}
-			//Else if not a variable, check if it is a literal
-			else if(accept(TokenType.LIT)){
-				//If is a literal return the value of the literal
-				return literal();
-			}
-		}
-		else if(accept(TokenType.LIT)){
+//		//if token is variable
+		if(NEXT_LEXEME.toString().toUpperCase().equals("TRUE") || NEXT_LEXEME.toString().toUpperCase().equals("FALSE")){
 			return literal();
+			//Check if variable is in the lookup table
+//			if(lookUpTable.keySet().contains(variable())){
+				//If the variable is a key in the look up table, return the value that if points to. (TRUE|FALSE)
+				
+//			}
+			//Else if not a variable, check if it is a literal
+//			else if(accept(TokenType.LIT)){
+//				//If is a literal return the value of the literal
+//				return literal();
+//			}
 		}
-		return false;
+		else{
+			return lookUpTable.get(variable());
+			
+		}
+	
+//		if(NEXT_LEXEME.toString().toUpperCase().equals("TRUE") || NEXT_LEXEME.toString().toUpperCase().equals("FALSE")){
+//			return literal();
+//		}
+//		else{
+//			return variable();
+//		}
 	}
 		
 	//Gus Shaw
 	//Returns alphabetic lexeme as the name of the variable
-	private static String variable() {
+	private static String variable() throws NotExpectedTokenTypeException, LexemeNotValidException, IOException {
 		//Return the current token which should be a variable name
+		expect(TokenType.VAR);
 		return CURRENT_LEXEME.toString();
 	}
 	
 	//Gus Shaw
 	//Returns true or false
-	private static boolean literal() {
+	private static boolean literal() throws NotExpectedTokenTypeException, LexemeNotValidException, IOException {
 		//Take the current token check if it equals the literal string true, If so return the boolen value true
+		expect(TokenType.LIT);
 		if(CURRENT_LEXEME.toString().toLowerCase().equals("true")) return true;
 		//Else the current token must equal false; Return the boolean value false
 		else
