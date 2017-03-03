@@ -183,24 +183,28 @@ public class Parser {
 	// Alex Colon
 	private static boolean query() throws NotExpectedTokenTypeException, LexemeNotValidException, IOException{ // QUERY <proposition>
 		expect(TokenType.QUERY);
-		return proposition();
+		boolean value = proposition();
+		expect(TokenType.DOT);
+		expect(TokenType.EOL);
+		return value;
 	}
 	
 	// Andrew Suggs
 	private static boolean proposition() throws LexemeNotValidException, IOException {
 		boolean result = implication();
 		while(accept(TokenType.PROP)){
-			return result = (result == implication());
+			result = result == implication();
 		}
 		return result;
 	}
 	
 	//Andrew Suggs
 	private static boolean implication() throws LexemeNotValidException, IOException {
-		boolean result = disjunction();
-		while(accept(TokenType.IMP)){
-			result = disjunction() || !result;
-		}
+		 boolean result = disjunction();
+		 if(NEXT_LEXEME.toString().toUpperCase().equals("->")){
+			 expect(TokenType.IMP);
+			 result = implication() || !result;
+		 }
 		return result;
 	}
 	
@@ -237,8 +241,6 @@ public class Parser {
 	}
 	
 	//Trace Boso
-	// needs checked/fixed
-	
 	private static boolean expression() throws LexemeNotValidException, IOException {
 		boolean result;
 		
@@ -263,27 +265,11 @@ public class Parser {
 		if(NEXT_LEXEME.toString().toUpperCase().equals("TRUE") || NEXT_LEXEME.toString().toUpperCase().equals("FALSE")){
 			return literal();
 			//Check if variable is in the lookup table
-//			if(lookUpTable.keySet().contains(variable())){
-				//If the variable is a key in the look up table, return the value that if points to. (TRUE|FALSE)
-				
-//			}
-			//Else if not a variable, check if it is a literal
-//			else if(accept(TokenType.LIT)){
-//				//If is a literal return the value of the literal
-//				return literal();
-//			}
 		}
 		else{
 			return lookUpTable.get(variable());
 			
 		}
-	
-//		if(NEXT_LEXEME.toString().toUpperCase().equals("TRUE") || NEXT_LEXEME.toString().toUpperCase().equals("FALSE")){
-//			return literal();
-//		}
-//		else{
-//			return variable();
-//		}
 	}
 		
 	//Gus Shaw
