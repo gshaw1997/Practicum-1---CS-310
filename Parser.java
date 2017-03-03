@@ -1,7 +1,6 @@
 import java.util.HashMap;
 import java.io.IOException;
 import java.io.StringReader;
-import java.lang.Exception;
 
 public class Parser {
 	
@@ -15,14 +14,14 @@ public class Parser {
 		LET, QUERY, LIT, PROP, IMP, DIS, CON, NEG, L_PAR, R_PAR, ASSIGN, DELIM, DOT, VAR, EOL
 	}
 	
-	public static boolean parse(String str) throws LexemeNotValidException, IOException, NotExpectedTokenTypeException{
+	public static boolean parse(String str) throws RuntimeException, IOException{
 		stringReader = new StringReader(str);
 		lex();
 		return program();
 	}
 	
 	// Caleb McHenry
-	private static void lex() throws LexemeNotValidException, IOException{
+	private static void lex() throws RuntimeException, IOException{
 		if(NEXT_LEXEME != null){
 			CURRENT_LEXEME = NEXT_LEXEME;
 		}
@@ -83,7 +82,7 @@ public class Parser {
 						return;
 					}
 				}
-				throw new LexemeNotValidException("Lexeme: " + NEXT_LEXEME + "is not a valid lexeme");
+				throw new RuntimeException("Lexeme: " + NEXT_LEXEME + "is not a valid lexeme");
 			}
 			//Implication ->
 			else if(c == '-'){
@@ -94,7 +93,7 @@ public class Parser {
 					return;
 				}
 				else{
-					throw new LexemeNotValidException("Lexeme: " + NEXT_LEXEME.toString() + "is not a valid lexeme");
+					throw new RuntimeException("Lexeme: " + NEXT_LEXEME.toString() + "is not a valid lexeme");
 				}
 			}
 			//Disjunction |
@@ -138,7 +137,7 @@ public class Parser {
 	}
 	
 	// Caleb McHenry
-	private static boolean accept(TokenType param) throws LexemeNotValidException, IOException{
+	private static boolean accept(TokenType param) throws RuntimeException, IOException{
 		if(TOKEN == param){
 			lex();
 			return true;
@@ -149,19 +148,19 @@ public class Parser {
 	}
 	
 	//Caleb McHenry
-	private static void expect(TokenType param) throws NotExpectedTokenTypeException, LexemeNotValidException, IOException{
+	private static void expect(TokenType param) throws RuntimeException, IOException{
 		if(TOKEN == param){
 			lex();
 			return;
 		}
 		else{
-			throw new NotExpectedTokenTypeException("Lexer TokenType: " + TOKEN + ", but expected TokenType: " + param);
+			throw new RuntimeException("Lexed TokenType: " + TOKEN + ", but expected TokenType: " + param);
 		}
 		
 	}
 	
 	// Alex Colon
-	private static boolean program() throws NotExpectedTokenTypeException, LexemeNotValidException, IOException{ // { <assignment> }* <query>
+	private static boolean program() throws RuntimeException, IOException{ // { <assignment> }* <query>
 		while(NEXT_LEXEME.toString().toUpperCase().equals("LET")){
 			assignment();
 		}
@@ -169,7 +168,7 @@ public class Parser {
 	}
 	
 	// Alex Colon
-	private static void assignment() throws NotExpectedTokenTypeException, LexemeNotValidException, IOException{ // LET <variable> = <proposition>;
+	private static void assignment() throws RuntimeException, IOException{ // LET <variable> = <proposition>;
 		expect(TokenType.LET);
 		String name =variable();
 		expect(TokenType.ASSIGN);
@@ -179,7 +178,7 @@ public class Parser {
 	}
 	
 	// Alex Colon
-	private static boolean query() throws NotExpectedTokenTypeException, LexemeNotValidException, IOException{ // QUERY <proposition>
+	private static boolean query() throws RuntimeException, IOException{ // QUERY <proposition>
 		expect(TokenType.QUERY);
 		boolean value = proposition();
 		expect(TokenType.DOT);
@@ -188,7 +187,7 @@ public class Parser {
 	}
 	
 	// Andrew Suggs
-	private static boolean proposition() throws LexemeNotValidException, IOException {
+	private static boolean proposition() throws RuntimeException, IOException {
 		boolean result = implication();
 		while(accept(TokenType.PROP)){
 			result = (result == implication());
@@ -197,7 +196,7 @@ public class Parser {
 	}
 	
 	//Andrew Suggs
-	private static boolean implication() throws LexemeNotValidException, IOException {
+	private static boolean implication() throws RuntimeException, IOException {
 		 boolean result = disjunction();
 		 if(NEXT_LEXEME.toString().toUpperCase().equals("->")){
 			 expect(TokenType.IMP);
@@ -207,7 +206,7 @@ public class Parser {
 	}
 	
 	//Andrew Suggs
-	private static boolean disjunction() throws LexemeNotValidException, IOException {
+	private static boolean disjunction() throws RuntimeException, IOException {
 		boolean result = conjunction();
 		while(accept(TokenType.DIS)){
 			result = conjunction() || result;
@@ -216,7 +215,7 @@ public class Parser {
 	}
 	
 	//Trace Boso
-	private static boolean conjunction() throws LexemeNotValidException, IOException {
+	private static boolean conjunction() throws RuntimeException, IOException {
 		boolean result = negation();
 		while (accept(TokenType.CON)){
 			result = negation() && result;
@@ -226,7 +225,7 @@ public class Parser {
 	}
 	
 	//Trace Boso
-	private static boolean negation() throws LexemeNotValidException, IOException {
+	private static boolean negation() throws RuntimeException, IOException {
 		boolean result;
 		
 		if (accept(TokenType.NEG)){
@@ -239,7 +238,7 @@ public class Parser {
 	}
 	
 	//Trace Boso
-	private static boolean expression() throws LexemeNotValidException, IOException {
+	private static boolean expression() throws RuntimeException, IOException {
 		boolean result;
 		
 		if (NEXT_LEXEME.toString().toUpperCase().equals("(")){
@@ -254,7 +253,7 @@ public class Parser {
 	}
 	
 	///Gus Shaw
-	private static boolean bool() throws LexemeNotValidException, IOException  {
+	private static boolean bool() throws RuntimeException, IOException  {
 		//if token is variable
 		if(NEXT_LEXEME.toString().toUpperCase().equals("TRUE") || NEXT_LEXEME.toString().toUpperCase().equals("FALSE")){
 			return literal();
@@ -266,7 +265,7 @@ public class Parser {
 		
 	//Gus Shaw
 	//Returns alphabetic lexeme as the name of the variable
-	private static String variable() throws NotExpectedTokenTypeException, LexemeNotValidException, IOException {
+	private static String variable() throws RuntimeException, IOException {
 		//Return the current token which should be a variable name
 		expect(TokenType.VAR);
 		return CURRENT_LEXEME.toString();
@@ -274,7 +273,7 @@ public class Parser {
 	
 	//Gus Shaw
 	//Returns true or false
-	private static boolean literal() throws NotExpectedTokenTypeException, LexemeNotValidException, IOException {
+	private static boolean literal() throws RuntimeException, IOException {
 		//Take the current token check if it equals the literal string true, If so return the boolen value true
 		expect(TokenType.LIT);
 		if(CURRENT_LEXEME.toString().toLowerCase().equals("true")) return true;
