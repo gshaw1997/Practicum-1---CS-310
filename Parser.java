@@ -181,7 +181,10 @@ public class Parser {
 	// Alex Colon
 	private static boolean query() throws NotExpectedTokenTypeException, LexemeNotValidException, IOException{ // QUERY <proposition>
 		expect(TokenType.QUERY);
-		return proposition();
+		boolean value = proposition();
+		expect(TokenType.DOT);
+		expect(TokenType.EOL);
+		return value;
 	}
 	
 	// Andrew Suggs
@@ -195,10 +198,11 @@ public class Parser {
 	
 	//Andrew Suggs
 	private static boolean implication() throws LexemeNotValidException, IOException {
-		boolean result = disjunction();
-		while(accept(TokenType.IMP)){
-			result = disjunction() || !result;
-		}
+		 boolean result = disjunction();
+		 if(NEXT_LEXEME.toString().toUpperCase().equals("->")){
+			 expect(TokenType.IMP);
+			 result = implication() || !result;
+		 }
 		return result;
 	}
 	
