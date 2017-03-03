@@ -1,6 +1,4 @@
 import java.util.HashMap;
-
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.Exception;
@@ -43,8 +41,8 @@ public class Parser {
 		}
 		
 		//Variable or Keyword
-		if(isLetter((char)c) == true){
-			while(isLetter((char)c)){
+		if(Character.isLetter((char)c) == true){
+			while(Character.isLetter((char)c)){
 				NEXT_LEXEME.append((char)c);
 				stringReader.mark(1);
 				c = stringReader.read();
@@ -190,7 +188,7 @@ public class Parser {
 	private static boolean proposition() throws LexemeNotValidException, IOException {
 		boolean result = implication();
 		while(accept(TokenType.PROP)){
-			return result = (result == implication());
+			result = (result == implication());
 		}
 		return result;
 	}
@@ -237,8 +235,6 @@ public class Parser {
 	}
 	
 	//Trace Boso
-	// needs checked/fixed
-	
 	private static boolean expression() throws LexemeNotValidException, IOException {
 		boolean result;
 		
@@ -254,36 +250,14 @@ public class Parser {
 	}
 	
 	///Gus Shaw
-	//	The first form returns the value of the variable whose name is
-	//	<variable> (VAR in enum) in the lookup table as a boolean or else throws an
-	//	exception if the name <variable> (VAR in enum) is not in the lookup table
-	//  The second form returns the value of <literal> (LIT in enum) as a boolean
 	private static boolean bool() throws LexemeNotValidException, IOException  {
-//		//if token is variable
+		//if token is variable
 		if(NEXT_LEXEME.toString().toUpperCase().equals("TRUE") || NEXT_LEXEME.toString().toUpperCase().equals("FALSE")){
 			return literal();
-			//Check if variable is in the lookup table
-//			if(lookUpTable.keySet().contains(variable())){
-				//If the variable is a key in the look up table, return the value that if points to. (TRUE|FALSE)
-				
-//			}
-			//Else if not a variable, check if it is a literal
-//			else if(accept(TokenType.LIT)){
-//				//If is a literal return the value of the literal
-//				return literal();
-//			}
 		}
 		else{
 			return lookUpTable.get(variable());
-			
 		}
-	
-//		if(NEXT_LEXEME.toString().toUpperCase().equals("TRUE") || NEXT_LEXEME.toString().toUpperCase().equals("FALSE")){
-//			return literal();
-//		}
-//		else{
-//			return variable();
-//		}
 	}
 		
 	//Gus Shaw
@@ -303,13 +277,5 @@ public class Parser {
 		//Else the current token must equal false; Return the boolean value false
 		else
 		return false;
-	}
-	
-	private static boolean isLetter(char c){
-		boolean boo = false;
-		if((int)c >= 65 && (int)c <= 90 || (int)c >= 97 && (int)c <= 122){
-			boo = true;
-		}
-		return boo;
 	}
 }
